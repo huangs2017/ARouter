@@ -35,6 +35,5 @@ dependencies {
         implementation project(':module2')
         implementation project(':module1')
     }
-    implementation project(':router_core')
     annotationProcessor project(':router_compiler')
 }
