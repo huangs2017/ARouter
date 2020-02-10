@@ -1,0 +1,57 @@
+//根据isModule标签动态的切换 集成/组件模式
+if (isModule) {
+    apply plugin: 'com.android.library'
+} else {
+    apply plugin: 'com.android.application'
+}
+
+def config = rootProject.ext.android
+
+android {
+    compileSdkVersion config.compileSdkVersion
+    buildToolsVersion config.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
+        versionCode config.versionCode
+        versionName config.versionName
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+
+        //添加一条boolean类型的变量
+        buildConfigField("boolean", "isModule", String.valueOf(isModule))
+
+        //组件模式下
+        if (!isModule) {
+            applicationId "tt.module2"
+        }
+
+        //资源配置
+        sourceSets {
+            main {
+                //在组件模式下 使用不同的manifest文件
+                if (!isModule) {
+                    manifest.srcFile 'src/main/module/AndroidManifest.xml'
+                    java.srcDirs 'src/main/module/java', 'src/main/java'
+
+                } else {
+                    manifest.srcFile 'src/main/AndroidManifest.xml'
+                }
+            }
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+
+    implementation project(':router_core')
+    annotationProcessor project(':router_compiler')
+}

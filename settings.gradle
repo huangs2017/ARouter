@@ -1,0 +1,2 @@
+include ':app', ':module1', ':module2', ':router_core', ':router_annotation', ':router_compiler'
+rootProject.name='ARouter'
